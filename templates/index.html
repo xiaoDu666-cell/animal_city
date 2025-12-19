@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>动物城测试</title>
+    <style>
+        body { font-family: Arial; padding: 20px; }
+        .question { margin: 20px 0; padding: 15px; border: 1px solid #ddd; }
+        button { background: #4CAF50; color: white; padding: 10px 20px; border: none; cursor: pointer; }
+        .result { margin-top: 20px; padding: 20px; background: #f5f5f5; }
+        img { max-width: 100%; }
+    </style>
+</head>
+<body>
+    <h1>动物城五行人格测试</h1>
+    
+    <div id="questions">
+        <div class="question">
+            <p>1. 面对挑战，你倾向于？</p >
+            <label><input type="radio" name="q1" value="A"> A. 立即行动</label><br>
+            <label><input type="radio" name="q1" value="B"> B. 仔细规划</label>
+        </div>
+        <!-- 更多题目... -->
+    </div>
+    
+    <button onclick="submitTest()">提交测试</button>
+    
+    <div id="result" class="result" style="display:none;">
+        <h2>结果：<span id="charName"></span></h2>
+        <p>匹配度：<span id="score"></span></p >
+        < img id="radarImg">
+        <p id="advice"></p >
+    </div>
+    
+    <script>
+    async function submitTest() {
+        const answers = [];
+        for(let i=1; i<=6; i++) {
+            const selected = document.querySelector(`input[name="q${i}"]:checked`);
+            answers.push(selected ? selected.value : 'A');
+        }
+        
+        const response = await fetch('/test', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({answers: answers})
+        });
+        
+        const data = await response.json();
+        
+        if(data.error) {
+            alert(data.error);
+            return;
+        }
+        
+        document.getElementById('charName').textContent = data.character;
+        document.getElementById('score').textContent = data.score;
+        document.getElementById('radarImg').src = data.radar;
+        document.getElementById('advice').textContent = data.advice;
+        document.getElementById('result').style.display = 'block';
+    }
+    </script>
+</body>
+</html>
