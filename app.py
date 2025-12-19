@@ -347,9 +347,8 @@ with open('animal_city_five_elements_report.md', 'w', encoding='utf-8') as f:
     f.write(final_report)
 
 
-# 在你的 app.py 文件末尾，修改启动部分
 if __name__ == '__main__':
-    # 从环境变量获取端口，默认为 9000（腾讯云HTTP函数固定端口）
-    port = int(os.getenv('SCF_PORT', 9000))
-    # 必须监听 0.0.0.0
-    app.run(host='0.0.0.0', port=port)
+    # 重要：Vercel需要从环境变量读取端口
+    port = int(os.environ.get('PORT', 3000))
+    # 重要：必须监听0.0.0.0
+    app.run(host='0.0.0.0', port=port, debug=False)
